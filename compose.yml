@@ -1,0 +1,42 @@
+services:
+  chatapp_backend:
+    image: chatapp_backend
+    container_name: chatapp_backend
+    build:
+      context: ./server
+      dockerfile: Dockerfile.server
+    ports:
+      - "4000:4000"
+    restart: always
+    networks:
+      - chatapp_network
+  chatapp_client:
+    image: chatapp_client
+    container_name: chatapp_client
+    build:
+      context: ./client
+      dockerfile: Dockerfile.client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - chatapp_backend
+    networks:
+      - chatapp_network
+    volumes:
+      - ./client/pages:/app/pages:z
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    networks:
+      - chatapp_network
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - chatapp_client
+
+networks:
+  chatapp_network:
+    driver: bridge
