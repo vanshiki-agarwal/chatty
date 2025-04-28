@@ -14,7 +14,7 @@ services:
     image: chatapp_client
     container_name: chatapp_client
     build:
-      context: ./client
+      context: ./frontend
       dockerfile: Dockerfile.client
     ports:
       - "3000:3000"
@@ -23,7 +23,7 @@ services:
     networks:
       - chatapp_network
     volumes:
-      - ./client/pages:/app/pages:z
+      - ./frontend/pages:/app/pages:z
   nginx:
     image: nginx:latest
     container_name: nginx-proxy
